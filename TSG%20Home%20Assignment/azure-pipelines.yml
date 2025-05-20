@@ -1,0 +1,83 @@
+trigger:
+  branches:
+    include:
+      - main
+
+resources:
+  repositories:
+    - repository: helmchart          # -- an alias you’ll use below
+      type: git
+      name: TSG Home Assignment/helmchart     # replace with your project/repo path
+      ref: refs/heads/main
+
+variables:
+  # your ACR and image names
+  ACR_NAME:   'myacrtsg'
+  IMAGE_NAME: 'webapp'
+  # path to your chart *inside* the checked-out helmchart repo
+  CHART_PATH: 'helmchart/mychart'
+  # use the DevOps build number as the image tag
+  BUILD_TAG:  '$(Build.BuildNumber)'
+
+pool:
+  name: 'Default'
+  demands:
+    - agent.name -equals staticAgent
+
+stages:
+# ──────────────── Stage 1: Build & Push Docker ────────────────
+- stage: Build
+  displayName: 🚀 Build & Push Docker Image
+  jobs:
+    - job: DockerBuild
+      displayName: BuildAndPush
+      steps:
+        - checkout: self
+
+        - task: Docker@2
+          displayName: Build & Push to ACR
+          inputs:
+            containerRegistry: 'ACR_service_connection'
+            repository:        '$(IMAGE_NAME)'
+            command:           'buildAndPush'
+            dockerfile:        'web_app/Dockerfile'
+            buildContext:      'web_app'
+            tags: |
+              $(BUILD_TAG)
+              latest
+
+# ──────────────── Stage 2: Bump Helm Chart ────────────────
+- stage: BumpChart
+  displayName: ✏️ Bump Helm Chart Version
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+    - job: UpdateChart
+      displayName: UpdateChartValues
+      steps:
+        # 1) checkout your application repo as usual
+        - checkout: self
+          persistCredentials: true
+
+        # 2) then pull in the helmchart repo
+        - checkout: helmchart
+          persistCredentials: true
+
+        # 3) bump values.yaml inside helmchart/mychart
+        - script: |
+            echo "Sources dir layout:"
+            tree -L 2
+
+            echo "Updating to $(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(BUILD_TAG)"
+            sed -i "s|repository:.*|repository: $(ACR_NAME).azurecr.io/$(IMAGE_NAME)|" $(CHART_PATH)/values.yaml
+            sed -i "s|tag:.*|tag: $(BUILD_TAG)|"                         $(CHART_PATH)/values.yaml
+          displayName: 'Bump values.yaml'
+
+        - script: |
+            cd helmchart
+            git config user.name  "Azure DevOps"
+            git config user.email "devops@myorg.com"
+            git add mychart/values.yaml
+            git commit -m "Chart: bump to image $(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(BUILD_TAG)"
+            git push origin HEAD:main
+          displayName: 'Commit & Push Chart Bump'
