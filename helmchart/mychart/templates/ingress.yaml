@@ -7,8 +7,13 @@ metadata:
     kubernetes.io/ingress.class: {{ .Values.ingress.className }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
+  tls:
+    - hosts:
+        - webapp.emanuel.click
+      secretName: emanuel-click
   rules:
-    - http:
+    - host: webapp.emanuelabs.click
+      http:
         paths:
           - path: /
             pathType: Prefix
@@ -18,3 +23,4 @@ spec:
                 port:
                   number: {{ .Values.servicePort }}
 {{- end }}
+

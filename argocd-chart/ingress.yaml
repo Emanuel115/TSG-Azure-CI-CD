@@ -5,8 +5,16 @@ metadata:
   namespace: argocd
 spec:
   ingressClassName: webapprouting.kubernetes.azure.com
+
+  # TLS section, pointing to your wildcard or specific TLS secret
+  tls:
+    - hosts:
+        - argocd.emanuelabs.click
+      secretName: emanuel-click
+
   rules:
-    - http:
+    - host: argocd.emanuelabs.click
+      http:
         paths:
           - path: /
             pathType: Prefix
