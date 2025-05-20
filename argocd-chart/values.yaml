@@ -1,0 +1,12 @@
+configs:
+  params:
+    "server.insecure": true
+
+server:
+  ingress:
+    enabled: false
+    ingressClassName: webapprouting.kubernetes.azure.com
+    hosts:
+      - "*"          # two-space indent for the list item
+    tls: []          # no extra spaces needed here
+
