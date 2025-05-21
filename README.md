@@ -213,3 +213,13 @@ kubectl get ingress -n $WEBAPP_NAMESPACE
 # Delete resources
 az group delete --name $RG --yes --no-wait
 ```
+
+## Images
+# Argo CD
+![Argo_CD](./images/Argo_CD.jpeg)
+# Argo CD TLS
+![TLS](./images/Argo_With_TLS.jpeg)
+# AKS Pods
+![AKS_PODS](./images/Kubernetes_all_Pods.jpeg)
+# AKS SVC
+![AKS_SVC](./images/Kubernetes_svc.jpeg)
