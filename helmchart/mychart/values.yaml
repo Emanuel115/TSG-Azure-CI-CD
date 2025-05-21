@@ -1,4 +1,3 @@
-# values.yaml
 image:
   repository: myacrtsg.azurecr.io/webapp
   tag: "20250520.28"
