@@ -6,7 +6,6 @@ metadata:
 spec:
   ingressClassName: webapprouting.kubernetes.azure.com
 
-  # TLS section, pointing to your wildcard or specific TLS secret
   tls:
     - hosts:
         - argocd.emanuelabs.click

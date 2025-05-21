@@ -9,10 +9,10 @@ spec:
   ingressClassName: {{ .Values.ingress.className }}
   tls:
     - hosts:
-        - webapp.emanuel.click
-      secretName: emanuel-click
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.tlsSecret }}
   rules:
-    - host: webapp.emanuelabs.click
+    - host: {{ .Values.ingress.host }}
       http:
         paths:
           - path: /

@@ -2,14 +2,15 @@ image:
   repository: myacrtsg.azurecr.io/webapp
   tag: "20250520.28"
   pullPolicy: IfNotPresent
+  containerPort: 5000
 
 servicePort: 80
 
 ingress:
   enabled: true
-  host: myapp.local
+  host: webapp.emanuel.click
   className: webapprouting.kubernetes.azure.com
-  tlsSecret: mychart-tls
+  tlsSecret: emanuel-click
 
 azureKeyVault:
   enabled: true
