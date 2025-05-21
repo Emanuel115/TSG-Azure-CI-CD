@@ -55,7 +55,7 @@ stages:
     - job: UpdateChart
       displayName: UpdateChartValues
       steps:
-        # 1) checkout your application repo as usual
+        # 1) checkout the application repo as usual
         - checkout: self
           persistCredentials: true
 
@@ -65,9 +65,6 @@ stages:
 
         # 3) bump values.yaml inside helmchart/mychart
         - script: |
-            echo "Sources dir layout:"
-            tree -L 2
-
             echo "Updating to $(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(BUILD_TAG)"
             sed -i "s|repository:.*|repository: $(ACR_NAME).azurecr.io/$(IMAGE_NAME)|" $(CHART_PATH)/values.yaml
             sed -i "s|tag:.*|tag: $(BUILD_TAG)|"                         $(CHART_PATH)/values.yaml
