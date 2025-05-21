@@ -14,19 +14,13 @@ ingress:
 
 azureKeyVault:
   enabled: true
-  # name of your Key Vault (without https://)
   vaultName: "mykeyvaultfortsg123"
-  # the tenant ID of your Azure subscription
   tenantId: "bf701585-56ca-47a3-aad5-ba3e8f3b2e6d"
-  # if you’re using a user-assigned managed identity, put its client ID here;
-  # otherwise leave blank and set useVMManagedIdentity to "false"
   userAssignedIdentityID: "e376acec-ed72-4054-975c-ef5713dd8d9c"
-  # toggle based on how you’ve bound identity to your AKS pods:
   usePodIdentity: "false"
   useVMManagedIdentity: "true"
-  # which secrets to pull from Key Vault
   objects:
-    - objectName: SuperSecret       # the secret’s name in Key Vault
-      objectType: secret            # could also be key or cert
-      objectVersion: ""             # blank for “latest”
+    - objectName: SuperSecret       
+      objectType: secret            
+      objectVersion: ""             
 
